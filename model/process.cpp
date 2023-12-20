@@ -19,12 +19,8 @@ private:
     ProcessStatus processStatus; // Defaults to waiting
 
 public:
-    Process(int id, int burst)
+    Process(int id, int burst) : processId(id), processBurst(burst), remainingTime(burst), processStatus(ProcessStatus::WAITING)
     {
-        this->processId = id;
-        this->processBurst = burst;
-        this->remainingTime = burst;
-        this->processStatus = ProcessStatus::WAITING;
     }
 
     void executeProcess(int executionTime)
