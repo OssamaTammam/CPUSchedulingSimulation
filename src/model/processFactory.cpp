@@ -1,34 +1,19 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <process.hpp>
+#include "process.hpp"
 using namespace std;
 
 class ProcessFactory
 {
 private:
-    static ProcessFactory *processFactoryInstance;
     int lastProcessId;
     vector<Process> processVector;
 
+public:
     ProcessFactory()
     {
         lastProcessId = -1;
-    }
-
-    ~ProcessFactory()
-    {
-        delete processFactoryInstance;
-    }
-
-public:
-    static ProcessFactory *getInstance()
-    {
-        if (processFactoryInstance == nullptr)
-        {
-            processFactoryInstance = new ProcessFactory();
-        }
-        return processFactoryInstance;
     }
 
     Process createProcess()
