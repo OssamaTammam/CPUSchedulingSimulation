@@ -14,7 +14,7 @@ private:
 public:
     BoundedQueue(size_t size) : maxSize(size), currSize(0) {}
 
-    void push(const T &value)
+    void enqueue(const T &value)
     {
         if (currSize < maxSize)
         {
@@ -23,11 +23,11 @@ public:
         }
         else
         {
-            throw out_of_range("Queue is full. Cannot push.");
+            throw out_of_range("Queue is full. Cannot enqueue.");
         }
     }
 
-    void pop()
+    void dequeue()
     {
         if (!myQueue.empty())
         {
@@ -36,7 +36,7 @@ public:
         }
         else
         {
-            throw out_of_range("Queue is empty. Cannot pop.");
+            throw out_of_range("Queue is empty. Cannot dequeue.");
         }
     }
 
