@@ -13,16 +13,18 @@ private:
         DONE     // Terminated process (Done running)
     } ProcessStatus;
 
-    int processId;                                        // Process PID
-    int processBurst;                                     // Process burst time in queue
-    int remainingTime = this->remainingTime;              // Process remaining time of execution
-    ProcessStatus processStatus = ProcessStatus::WAITING; // Defaults to waiting
+    int processId;               // Process PID
+    int processBurst;            // Process burst time in queue
+    int remainingTime;           // Process remaining time of execution
+    ProcessStatus processStatus; // Defaults to waiting
 
 public:
     Process(int id, int burst)
     {
         this->processId = id;
         this->processBurst = burst;
+        this->remainingTime = burst;
+        this->processStatus = ProcessStatus::WAITING;
     }
 
     void executeProcess(int executionTime)
@@ -35,23 +37,29 @@ public:
         this->processId = id;
     }
 
-    int getProcessId()
+    int getProcessId() const
     {
         return this->processId;
     }
 
-    void setProcessBurst(int burst)
+    void
+    setProcessBurst(int burst)
     {
         this->processBurst = burst;
     }
 
-    int getProcessBurst()
+    int getProcessBurst() const
     {
         return this->processBurst;
     }
 
-    ProcessStatus getProcessStatus()
+    ProcessStatus getProcessStatus() const
     {
         return this->processStatus;
+    }
+
+    void setProcessStatus(ProcessStatus newStatus)
+    {
+        this->processStatus = newStatus;
     }
 };
