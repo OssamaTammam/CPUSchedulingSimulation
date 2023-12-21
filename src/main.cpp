@@ -6,15 +6,16 @@
 using namespace std;
 
 template <typename T>
-class BoundedQueue
+class SchedulingQueue
 {
 private:
     queue<T> myQueue; // Renamed to avoid conflict with std::queue
     size_t maxSize;
     int currSize;
+    int quantum;
 
 public:
-    BoundedQueue(size_t size) : maxSize(size), currSize(0) {}
+    SchedulingQueue(size_t size, int quantum) : maxSize(size), quantum(quantum), currSize(0) {}
 
     void enqueue(const T &value)
     {
@@ -149,10 +150,16 @@ public:
 int main()
 {
     ProcessFactory processFactory;
-    Process p1 = processFactory.createProcess();
+    SchedulingQueue<Process> queue1(10, 8), queue2(20, 16), queue3(30, 0); // 0 means fcfs queue
+    queue<Process> waitingQueue1, waitingQueue2, waitingQueue3;
+    vector<string> history;
 
-    cout << p1.getProcessId() << endl
-         << p1.getProcessBurst() << endl
-         << p1.getProcessStatus() << endl;
+    for (int i = 0; i < 100; i++)
+    {
+        waitingQueue1.push(processFactory.createProcess());
+    }
+
+    // We will use iterations as serve time 1 iteration of a loop is 1 ms
+
     return 0;
 };
