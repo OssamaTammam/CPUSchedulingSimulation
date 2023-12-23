@@ -1,23 +1,22 @@
-CC = g++-11
-CFLAGS = -std=c++11
-SRCDIR = src
-OBJDIR = obj
-BINDIR = bin
-SRCFILES = $(wildcard $(SRCDIR)/*.cpp)
-OBJFILES = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCFILES))
-EXECUTABLE = $(BINDIR)/main.exe
+CC = g++
+CFLAGS = -Wall -g
 
-all: $(EXECUTABLE)
+TARGET = main
+SRC_DIR = src
+OBJ_DIR = obj
 
-$(EXECUTABLE): $(OBJFILES)
-	@mkdir -p $(BINDIR)
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
+
+$(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	@mkdir -p $(OBJDIR)
+	
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-clean:
-	rm -rf $(OBJDIR) $(BINDIR)
+run: $(TARGET)
+	./$(TARGET)
 
-.PHONY: all clean
+clean:
+	rm -f $(OBJ_DIR)/*.o $(TARGET)
