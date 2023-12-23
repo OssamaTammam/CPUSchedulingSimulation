@@ -1,3 +1,4 @@
+// MUST USE G++ COMPILER
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
