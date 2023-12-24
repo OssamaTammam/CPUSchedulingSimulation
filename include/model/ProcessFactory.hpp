@@ -41,10 +41,3 @@ public:
         return newProcess;
     }
 };
-
-/**
- * @class Scheduler
- * @brief Represents a CPU scheduler.
- *
- * The Scheduler class is responsible for managing the scheduling queues and executing the processes.
- */

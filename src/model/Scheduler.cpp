@@ -10,15 +10,9 @@ using namespace std;
 class Scheduler
 {
 private:
-    vector<SchedulingQueue> schedulingQueues; /**< A vector of scheduling queues. */
-    vector<Process *> processVector;          /**< A vector of pointers to the processes. */
+    vector<SchedulingQueue> schedulingQueues;
+    vector<Process *> processVector;
 
-    /**
-     * @brief Upgrades a process to a higher priority queue.
-     *
-     * @param currProcess A pointer to the process to be upgraded.
-     * @param currQueueIndex The index of the current queue of the process.
-     */
     void upgradeProcess(Process *currProcess, int currQueueIndex)
     {
 
@@ -37,14 +31,8 @@ private:
     }
 
 public:
-    /**
-     * @brief Constructs a Scheduler object.
-     */
     Scheduler(){};
 
-    /**
-     * @brief Destructs a Scheduler object.
-     */
     ~Scheduler()
     {
         for (auto process : processVector)
@@ -54,24 +42,12 @@ public:
         processVector.clear();
     }
 
-    /**
-     * @brief Adds a new scheduling queue to the scheduler.
-     *
-     * @param size The maximum size of the scheduling queue.
-     * @param quantum The time quantum for the Round Robin scheduling algorithm.
-     * @param serveTime The time required to serve a process.
-     */
     void addQueue(size_t size, int quantum, int serveTime)
     {
         SchedulingQueue newQueue(size, quantum, serveTime);
         schedulingQueues.push_back(newQueue);
     }
 
-    /**
-     * @brief Adds a new process to the scheduler.
-     *
-     * @param currProcess A pointer to the process to be added.
-     */
     void addProcess(Process *currProcess)
     {
         currProcess->addStage("Process " + to_string(currProcess->getProcessId()) + " added to the system with burst time " + to_string(currProcess->getProcessBurst()) + "\n");
@@ -79,9 +55,6 @@ public:
         schedulingQueues[0].enqueue(currProcess);
     }
 
-    /**
-     * @brief Starts the execution of the processes.
-     */
     void startExecution()
     {
         while (!this->isSchedulingDone())
@@ -128,21 +101,11 @@ public:
         }
     }
 
-    /**
-     * @brief Returns the scheduling queues.
-     *
-     * @return The scheduling queues.
-     */
     vector<Process *> getProcessVector()
     {
         return this->processVector;
     }
 
-    /**
-     * @brief Checks if the scheduling is done.
-     *
-     * @return true if the scheduling is done, false otherwise.
-     */
     bool isSchedulingDone()
     {
         for (auto queue : schedulingQueues)
