@@ -133,4 +133,4 @@ bool SchedulingQueue::getFcfsStatus() const
 int SchedulingQueue::getRemainingQuantum() const
 {
     return this->remainingQuantum;
-};
+}

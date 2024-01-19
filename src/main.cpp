@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include <climits>
 #include <random>
-#include "ProcessFactory.hpp"
-#include "Scheduler.hpp"
+#include <ProcessFactory.hpp>
+#include <Scheduler.hpp>
 
 #define PROCESSES_NUMBER 100
 
