@@ -1,87 +1,63 @@
-#include <iostream>
-#include <vector>
-#include <numeric>
+#include <Process.hpp>
 
-using namespace std;
-
-class Process
+Process::Process(int id, int burst) : processId(id), processBurst(burst), remainingTime(burst), processStatus(ProcessStatus::WAITING)
 {
-public:
-    typedef enum
-    {
-        READY,
-        WAITING,
-        RUNNING,
-        DONE
-    } ProcessStatus;
+    this->processHistory.push_back("Process created with burst time " + to_string(this->processBurst) + "\n");
+}
 
-private:
-    int processId;
-    int processBurst;
-    int remainingTime;
-    ProcessStatus processStatus;
-    vector<string> processHistory;
+int Process::executeProcess(int execTime)
+{
+    this->processStatus = ProcessStatus::RUNNING;
 
-public:
-    Process(int id, int burst) : processId(id), processBurst(burst), remainingTime(burst), processStatus(ProcessStatus::WAITING)
+    int realExecTime = (execTime > this->remainingTime) ? this->remainingTime : execTime;
+    this->remainingTime -= realExecTime;
+
+    this->addStage("Process " + to_string(this->processId) + " executed for " + to_string(realExecTime) + " ms\n");
+
+    this->processStatus = (this->remainingTime <= 0) ? ProcessStatus::DONE : ProcessStatus::READY;
+
+    if (this->processStatus == ProcessStatus::DONE)
     {
-        this->processHistory.push_back("Process created with burst time " + to_string(this->processBurst) + "\n");
+        this->addStage("Process " + to_string(this->processId) + " finished executing\n");
     }
 
-    int executeProcess(int execTime)
-    {
-        this->processStatus = ProcessStatus::RUNNING;
+    return (execTime - realExecTime);
+}
 
-        int realExecTime = (execTime > this->remainingTime) ? this->remainingTime : execTime;
-        this->remainingTime -= realExecTime;
+void Process::addStage(string newStage)
+{
+    cout << newStage;
+    this->processHistory.push_back(newStage);
+}
 
-        this->addStage("Process " + to_string(this->processId) + " executed for " + to_string(realExecTime) + " ms\n");
+string Process::getHistoryString()
+{
+    string history = "History of process " + to_string(this->processId) + ":\n";
+    history += accumulate(this->processHistory.begin(), this->processHistory.end(), string());
+    return history;
+}
 
-        this->processStatus = (this->remainingTime <= 0) ? ProcessStatus::DONE : ProcessStatus::READY;
+int Process::getProcessId() const
+{
+    return this->processId;
+}
 
-        if (this->processStatus == ProcessStatus::DONE)
-        {
-            this->addStage("Process " + to_string(this->processId) + " finished executing\n");
-        }
+int Process::getProcessBurst() const
+{
+    return this->processBurst;
+}
 
-        return (execTime - realExecTime);
-    }
+Process::ProcessStatus Process::getProcessStatus() const
+{
+    return this->processStatus;
+}
 
-    void addStage(string newStage)
-    {
-        cout << newStage;
-        this->processHistory.push_back(newStage);
-    }
+void Process::setProcessStatus(ProcessStatus newStatus)
+{
+    this->processStatus = newStatus;
+}
 
-    string getHistoryString()
-    {
-        string history = "History of process " + to_string(this->processId) + ":\n";
-        history += accumulate(this->processHistory.begin(), this->processHistory.end(), string());
-        return history;
-    }
-
-    int getProcessId() const
-    {
-        return this->processId;
-    }
-
-    int getProcessBurst() const
-    {
-        return this->processBurst;
-    }
-
-    ProcessStatus getProcessStatus() const
-    {
-        return this->processStatus;
-    }
-
-    void setProcessStatus(ProcessStatus newStatus)
-    {
-        this->processStatus = newStatus;
-    }
-
-    vector<string> &getProcessHistory()
-    {
-        return this->processHistory;
-    }
-};
+vector<string> &Process::getProcessHistory()
+{
+    return this->processHistory;
+}

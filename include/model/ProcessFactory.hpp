@@ -1,9 +1,12 @@
+#ifndef PROCESS_FACTORY_HPP
+#define PROCESS_FACTORY_HPP
+
 #include <iostream>
 #include <cstdlib>
 #include <queue>
 #include <vector>
 #include <random>
-#include "Process.hpp"
+#include <Process.hpp>
 
 #define PROCESSES_NUMBER 100
 
@@ -24,20 +27,14 @@ public:
     /**
      * @brief Constructs a ProcessFactory object.
      */
-    ProcessFactory()
-    {
-        lastProcessId = -1;
-    }
+    ProcessFactory();
 
     /**
      * @brief Creates a new process with a random burst time.
      *
      * @return A pointer to the newly created process.
      */
-    Process *createProcess()
-    {
-        int burst = 1 + (rand() % 100); // Random burst time between 1 and 100
-        Process *newProcess = new Process(++lastProcessId + 1, burst);
-        return newProcess;
-    }
+    Process *createProcess();
 };
+
+#endif // PROCESS_FACTORY_HPP

@@ -1,29 +1,18 @@
-#include <iostream>
-#include <cstdlib>
-#include <queue>
-#include <vector>
-#include <random>
-#include "Process.hpp"
+#include <Process.hpp>
+#include <ProcessFactory.hpp>
 
 #define PROCESSES_NUMBER 100
 
 using namespace std;
 
-class ProcessFactory
+ProcessFactory::ProcessFactory()
 {
-private:
-    int lastProcessId;
+    lastProcessId = -1;
+}
 
-public:
-    ProcessFactory()
-    {
-        lastProcessId = -1;
-    }
-
-    Process *createProcess()
-    {
-        int burst = 1 + (rand() % 100); // Random burst time between 1 and 100
-        Process *newProcess = new Process(++lastProcessId + 1, burst);
-        return newProcess;
-    }
-};
+Process *ProcessFactory::createProcess()
+{
+    int burst = 1 + (rand() % 100); // Random burst time between 1 and 100
+    Process *newProcess = new Process(++lastProcessId + 1, burst);
+    return newProcess;
+}

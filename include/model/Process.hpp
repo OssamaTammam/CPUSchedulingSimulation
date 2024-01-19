@@ -1,5 +1,5 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef PROCESS_HPP
+#define PROCESS_HPP
 
 #include <iostream>
 #include <vector>
@@ -91,4 +91,4 @@ public:
     vector<string> &getProcessHistory();
 };
 
-#endif // PROCESS_H
+#endif // PROCESS_HPP

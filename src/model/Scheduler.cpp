@@ -1,121 +1,110 @@
-#include <iostream>
-#include <cstdlib>
-#include <vector>
-#include <random>
-#include "SchedulingQueue.hpp"
-#include "Process.hpp"
+#include <SchedulingQueue.hpp>
+#include <Process.hpp>
+#include <Scheduler.hpp>
 
 using namespace std;
 
-class Scheduler
+void Scheduler::upgradeProcess(Process *currProcess, int currQueueIndex)
 {
-private:
-    vector<SchedulingQueue> schedulingQueues;
-    vector<Process *> processVector;
 
-    void upgradeProcess(Process *currProcess, int currQueueIndex)
+    if (currQueueIndex == 0)
     {
-
-        if (currQueueIndex == 0)
-        {
-            this->schedulingQueues[currQueueIndex + 1].enqueue(currProcess);
-        }
-        else if (currQueueIndex == int((this->schedulingQueues).size()) - 1)
-        {
-            this->schedulingQueues[currQueueIndex - 1].enqueue(currProcess);
-        }
-        else
-        {
-            rand() % 2 ? this->schedulingQueues[currQueueIndex - 1].enqueue(currProcess) : this->schedulingQueues[currQueueIndex + 1].enqueue(currProcess);
-        }
+        this->schedulingQueues[currQueueIndex + 1].enqueue(currProcess);
     }
-
-public:
-    Scheduler(){};
-
-    ~Scheduler()
+    else if (currQueueIndex == int((this->schedulingQueues).size()) - 1)
     {
-        for (auto process : processVector)
+        this->schedulingQueues[currQueueIndex - 1].enqueue(currProcess);
+    }
+    else
+    {
+        rand() % 2 ? this->schedulingQueues[currQueueIndex - 1].enqueue(currProcess) : this->schedulingQueues[currQueueIndex + 1].enqueue(currProcess);
+    }
+}
+
+Scheduler::Scheduler(){};
+
+Scheduler::~Scheduler()
+{
+    for (auto process : processVector)
+    {
+        delete process;
+    }
+    processVector.clear();
+}
+
+void Scheduler::addQueue(size_t size, int quantum, int serveTime)
+{
+    SchedulingQueue newQueue(size, quantum, serveTime);
+    schedulingQueues.push_back(newQueue);
+}
+
+void Scheduler::addProcess(Process *currProcess)
+{
+    currProcess->addStage("Process " + to_string(currProcess->getProcessId()) + " added to the system with burst time " + to_string(currProcess->getProcessBurst()) + "\n");
+    processVector.push_back(currProcess);
+    schedulingQueues[0].enqueue(currProcess);
+}
+
+void Scheduler::startExecution()
+{
+    while (!this->isSchedulingDone())
+    {
+        // Iterate over every queue
+        for (int queueIndex = 0; queueIndex < int((this->schedulingQueues).size()); queueIndex++)
         {
-            delete process;
-        }
-        processVector.clear();
-    }
+            SchedulingQueue &currQueue = schedulingQueues[queueIndex];
 
-    void addQueue(size_t size, int quantum, int serveTime)
-    {
-        SchedulingQueue newQueue(size, quantum, serveTime);
-        schedulingQueues.push_back(newQueue);
-    }
-
-    void addProcess(Process *currProcess)
-    {
-        currProcess->addStage("Process " + to_string(currProcess->getProcessId()) + " added to the system with burst time " + to_string(currProcess->getProcessBurst()) + "\n");
-        processVector.push_back(currProcess);
-        schedulingQueues[0].enqueue(currProcess);
-    }
-
-    void startExecution()
-    {
-        while (!this->isSchedulingDone())
-        {
-            // Iterate over every queue
-            for (int queueIndex = 0; queueIndex < int((this->schedulingQueues).size()); queueIndex++)
+            // If the queue is empty, continue to the next queue
+            if (currQueue.empty())
             {
-                SchedulingQueue &currQueue = schedulingQueues[queueIndex];
+                continue;
+            }
 
-                // If the queue is empty, continue to the next queue
+            // Serve for the intended serve time of each queue
+            int remainingServeTime = currQueue.getServeTime();
+            while (remainingServeTime > 0)
+            {
                 if (currQueue.empty())
                 {
-                    continue;
+                    break;
                 }
 
-                // Serve for the intended serve time of each queue
-                int remainingServeTime = currQueue.getServeTime();
-                while (remainingServeTime > 0)
+                int savedTime = 0;
+                if (currQueue.getFcfsStatus())
                 {
-                    if (currQueue.empty())
-                    {
-                        break;
-                    }
-
-                    int savedTime = 0;
-                    if (currQueue.getFcfsStatus())
-                    {
-                        savedTime += currQueue.executeFront(remainingServeTime);
-                    }
-                    else
-                    {
-                        Process *currProcess = currQueue.front();
-                        savedTime += currQueue.executeFront(remainingServeTime);
-
-                        if (currProcess->getProcessStatus() == Process::READY && currQueue.getRemainingQuantum() == 0)
-                        {
-                            currQueue.dequeue();
-                            this->upgradeProcess(currProcess, queueIndex);
-                        }
-                    }
-                    remainingServeTime = savedTime;
+                    savedTime += currQueue.executeFront(remainingServeTime);
                 }
+                else
+                {
+                    Process *currProcess = currQueue.front();
+                    savedTime += currQueue.executeFront(remainingServeTime);
+
+                    if (currProcess->getProcessStatus() == Process::READY && currQueue.getRemainingQuantum() == 0)
+                    {
+                        currQueue.dequeue();
+                        this->upgradeProcess(currProcess, queueIndex);
+                    }
+                }
+                remainingServeTime = savedTime;
             }
         }
     }
+}
 
-    vector<Process *> getProcessVector()
-    {
-        return this->processVector;
-    }
+vector<Process *> Scheduler::getProcessVector()
+{
+    return this->processVector;
+}
 
-    bool isSchedulingDone()
+bool Scheduler::isSchedulingDone()
+{
+    for (auto queue : schedulingQueues)
     {
-        for (auto queue : schedulingQueues)
+        if (!queue.empty())
         {
-            if (!queue.empty())
-            {
-                return false;
-            }
+            return false;
         }
-
-        return true;
     }
+
+    return true;
 };
