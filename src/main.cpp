@@ -1,4 +1,3 @@
-// MUST USE G++ COMPILER
 #include <iostream>
 #include <ProcessFactory.hpp>
 #include <Scheduler.hpp>
