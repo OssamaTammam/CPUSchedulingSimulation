@@ -10,8 +10,6 @@
 
 #define PROCESSES_NUMBER 100
 
-using namespace std;
-
 /**
  * @class ProcessFactory
  * @brief Represents a process factory.

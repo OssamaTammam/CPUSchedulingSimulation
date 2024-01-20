@@ -1,10 +1,6 @@
 #include <Process.hpp>
 #include <ProcessFactory.hpp>
 
-#define PROCESSES_NUMBER 100
-
-using namespace std;
-
 ProcessFactory::ProcessFactory()
 {
     lastProcessId = -1;

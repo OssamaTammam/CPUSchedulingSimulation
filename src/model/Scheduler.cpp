@@ -2,8 +2,6 @@
 #include <Process.hpp>
 #include <Scheduler.hpp>
 
-using namespace std;
-
 void Scheduler::upgradeProcess(Process *currProcess, int currQueueIndex)
 {
 

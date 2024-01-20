@@ -1,8 +1,6 @@
 #include <Process.hpp>
 #include <SchedulingQueue.hpp>
 
-using namespace std;
-
 SchedulingQueue::SchedulingQueue(size_t size, int quantum, int serveTime) : maxSize(size), currSize(0), quantum(quantum), isFcfs(false), serveTime(serveTime), remainingQuantum(quantum)
 {
     if (quantum == 0)
